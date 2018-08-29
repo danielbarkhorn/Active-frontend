@@ -17,10 +17,10 @@ export default class Content extends Component {
       unlabeled_x: [5,5],
       unlabeled_y: [6,7],
 
-      selected_x: [1, 4],
-      selected_y: [4, 1],
+      selected_x: [],
+      selected_y: [],
 
-			num_selected: 1,
+			num_selected: 0,
 			max_selected: 3,
 			layout:	{
 				width: 1000,
@@ -37,7 +37,6 @@ export default class Content extends Component {
 		let { points: [ point ]} = e;
     let new_selected_x = prevState.selected_x.slice();
     let new_selected_y = prevState.selected_y.slice();
-		console.log('prevstate', prevState);
 
 		for (let index = 0; index < new_selected_x.length; index++) {
 			if (prevState.selected_x[index] === point.x && prevState.selected_y[index] === point.y) {
@@ -51,12 +50,17 @@ export default class Content extends Component {
   		new_selected_y.push(point.y);
     }
 
-		console.log('new selected', new_selected_x, new_selected_y);
+    if(new_selected_x.length > this.state.max_selected) {
+      // Make this an alert
+      console.log('You have selected as many points as you are allowed');
+      return prevState;
+    }
 
 		return {
 			...prevState,
 			selected_x: new_selected_x,
 			selected_y: new_selected_y,
+      num_selected: new_selected_x.length,
 		};
 	});
 
@@ -71,7 +75,7 @@ export default class Content extends Component {
 
 	render() {
 		return (
-			<Fragment>
+			<div className='content'>
 				 <Graph
 					class_A_x={this.state.class_A_x}
 					class_A_y={this.state.class_A_y}
@@ -89,7 +93,7 @@ export default class Content extends Component {
 					max_selected={this.state.max_selected}
 					add_selected={this.addSelected}
 				/>
-			</Fragment>
+			</div>
 		);
 	}
 }
