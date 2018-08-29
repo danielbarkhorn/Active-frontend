@@ -1,0 +1,10 @@
+.header {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: (3 * $base-spacing);
+	border-bottom: 1px $border-blue solid;
+	background-color: $background;
+	color: $text-blue;
+	font-weight: 600;
+}
