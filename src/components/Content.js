@@ -10,6 +10,7 @@ export default class Content extends Component {
 
 		this.state = {
       labels: [],
+      features: [],
       xAxis: '',
       yAxis: '',
 
@@ -27,6 +28,11 @@ export default class Content extends Component {
 	}
 
   componentDidMount() {
+    this.restart();
+  }
+
+  restart = () =>
+  {
     axios.get('http://0.0.0.0:8000/restart')
     .then(response => response['data'])
     .then(response => {
@@ -41,6 +47,7 @@ export default class Content extends Component {
     const labels = Object.keys(data);
     const initXAxis = Object.keys(data[labels[0]])[0];
     const initYAxis = Object.keys(data[labels[0]])[1];
+    const features = Object.keys(data[labels[0]]);
 
     this.setState((prevState) => {
       return {
@@ -49,6 +56,7 @@ export default class Content extends Component {
         xAxis: initXAxis,
         yAxis: initYAxis,
         labeledData: data,
+        features: features,
       }
     });
   }
@@ -85,26 +93,14 @@ export default class Content extends Component {
 		};
 	});
 
-  retrieveData = () => {
-
+  handleXAxisChange = (e) => {
+    const { target: { value } } = e;
+    this.setState(() => ({ xAxis: value}));
   }
 
-  restart = () =>
-  {
-    axios.get('http://0.0.0.0:8000/restart')
-    .then(function (response) {
-      const { data } = response;
-      this.setState((prevState) => {
-        return {
-          labeledData: data,
-          ...prevState,
-        }
-      });
-      console.log('done?');
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
+  handleYAxisChange = (e) => {
+    const { target: { value } } = e;
+    this.setState(() => ({ yAxis: value}));
   }
 
 	render() {
@@ -124,9 +120,14 @@ export default class Content extends Component {
 				<Sidebar
 					num_selected={this.state.num_selected}
 					max_selected={this.state.max_selected}
-					add_selected={this.addSelected}
+					add_selected={this.state.addSelected}
           labelPoints={this.retrieveData}
           restart={this.restart}
+          xAxis={this.state.xAxis}
+          yAxis={this.state.yAxis}
+          features={this.state.features}
+          handleXAxisChange={this.handleXAxisChange}
+          handleYAxisChange={this.handleYAxisChange}
 				/>
 			</div>
 		);

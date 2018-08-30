@@ -40,7 +40,7 @@ export default (props) => {
         y: labeledData[label][yAxis],
         mode: 'markers',
         types: 'scatter',
-        legendgroup: label,
+        name: label,
       }
       dataTrace.push(trace);
     });

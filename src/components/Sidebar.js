@@ -7,8 +7,17 @@ export default (props) => {
 		max_selected,
 		add_selected,
 		labelPoints,
-		restart
+		restart,
+		xAxis,
+		yAxis,
+		features,
+		handleXAxisChange,
+		handleYAxisChange,
 	} = props;
+
+	const makeOption = (name) => {
+		return <option key={name} value={name}>{name}</option>;
+	}
 
 	return (
 		<div className='sidebar'>
@@ -27,6 +36,18 @@ export default (props) => {
 				label='Restart Demo'
 				onClick={restart}
 			/>
+			<select
+				onChange={handleXAxisChange}
+				value={xAxis}
+			>
+			  {features.map(makeOption)}
+			</select>
+			<select
+			onChange={handleYAxisChange}
+				value={yAxis}
+			>
+		  	{features.map(makeOption)}
+			</select>
 		</div>
 	)
 }
