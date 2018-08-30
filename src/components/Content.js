@@ -2,6 +2,7 @@ import React, { Component, Fragment } from 'react';
 import '../assets/styles/main.scss';
 import Graph from '../components/Graph.js';
 import Sidebar from '../components/Sidebar.js';
+import axios from 'axios';
 
 export default class Content extends Component {
   constructor(props) {
@@ -14,8 +15,8 @@ export default class Content extends Component {
       class_B_x: [4,5,3],
       class_B_y: [1,2,1],
 
-      unlabeled_x: [5,5],
-      unlabeled_y: [6,7],
+      unlabeled_x: [5,5,1],
+      unlabeled_y: [6,7,1],
 
       selected_x: [],
       selected_y: [],
@@ -37,6 +38,7 @@ export default class Content extends Component {
 		let { points: [ point ]} = e;
     let new_selected_x = prevState.selected_x.slice();
     let new_selected_y = prevState.selected_y.slice();
+    console.log(e);
 
 		for (let index = 0; index < new_selected_x.length; index++) {
 			if (prevState.selected_x[index] === point.x && prevState.selected_y[index] === point.y) {
@@ -45,15 +47,23 @@ export default class Content extends Component {
 			}
 		}
 
+    if(new_selected_x.length === this.state.max_selected) {
+      // make this an alert
+      console.log('You have selected as many points as you are allowed');
+      return prevState;
+    }
+
+    const unlabeled_x_ind = prevState.unlabeled_x.indexOf(point.x);
+    const unlabeled_y_ind = prevState.unlabeled_y.indexOf(point.y);
+
+    // if(unlabeled_x_ind === -1 || unlabeled_y_ind === -1 || unlabeled_x_ind !== unlabeled_y_ind){
+    //   console.log('You have selected a point that is already labeled. Select an unlabeled point');
+    //   return prevState;
+    // }
+
     if(prevState.selected_x.length === new_selected_x.length){
       new_selected_x.push(point.x);
   		new_selected_y.push(point.y);
-    }
-
-    if(new_selected_x.length > this.state.max_selected) {
-      // Make this an alert
-      console.log('You have selected as many points as you are allowed');
-      return prevState;
     }
 
 		return {
@@ -64,14 +74,25 @@ export default class Content extends Component {
 		};
 	});
 
-	addSelected = () => {
-		console.log('addSelected');
-		console.log(this.state);
-		this.setState(() => ({
-	    num_selected: 2,
-	  }));
-		console.log(this.state);
-	}
+  retrieveData = () => {
+    console.log('about to call axios');
+    axios.get('http://0.0.0.0:8000/restart')
+    .then(function (response) {
+      console.log('Response');
+      console.log(response);
+    })
+    .catch(function (error) {
+      console.log('error');
+      console.log(error);
+    });
+  }
+
+  restart = () =>
+  {
+    //calls api, get's points, setState. This should be caled on
+    // componentdidmount
+    console.log('restart');
+  }
 
 	render() {
 		return (
@@ -92,6 +113,8 @@ export default class Content extends Component {
 					num_selected={this.state.num_selected}
 					max_selected={this.state.max_selected}
 					add_selected={this.addSelected}
+          labelPoints={this.retrieveData}
+          restart={this.restart}
 				/>
 			</div>
 		);
