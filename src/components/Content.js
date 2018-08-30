@@ -9,30 +9,49 @@ export default class Content extends Component {
 		super(props);
 
 		this.state = {
-			class_A_x: [1,2,3],
-      class_A_y: [4,4,4],
+      labels: [],
+      xAxis: '',
+      yAxis: '',
 
-      class_B_x: [4,5,3],
-      class_B_y: [1,2,1],
-
-      unlabeled_x: [5,5,1],
-      unlabeled_y: [6,7,1],
+      unlabeled_x: [],
+      unlabeled_y: [],
 
       selected_x: [],
       selected_y: [],
 
+			labeledData: {},
+
 			num_selected: 0,
 			max_selected: 3,
-			layout:	{
-				width: 1000,
-				height: 600,
-				autosizer: 'true',
-				hovermode: 'closest',
-				showlegend: false,
-			},
 		}
-		console.log(this.state);
 	}
+
+  componentDidMount() {
+    axios.get('http://0.0.0.0:8000/restart')
+    .then(response => response['data'])
+    .then(response => {
+      this.initializeStateFromData(response);
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  }
+
+  initializeStateFromData(data) {
+    const labels = Object.keys(data);
+    const initXAxis = Object.keys(data[labels[0]])[0];
+    const initYAxis = Object.keys(data[labels[0]])[1];
+
+    this.setState((prevState) => {
+      return {
+        ...prevState,
+        labels: labels,
+        xAxis: initXAxis,
+        yAxis: initYAxis,
+        labeledData: data,
+      }
+    });
+  }
 
 	handleDataClick = (e) => this.setState((prevState) => {
 		let { points: [ point ]} = e;
@@ -47,19 +66,11 @@ export default class Content extends Component {
 			}
 		}
 
-    if(new_selected_x.length === this.state.max_selected) {
+    if(new_selected_x.length === this.state.max_selected || point.curveNumber !== 0) {
       // make this an alert
-      console.log('You have selected as many points as you are allowed');
+      console.log('You have selected as many points as you are allowed, or you have tried to select a labeled point.');
       return prevState;
     }
-
-    const unlabeled_x_ind = prevState.unlabeled_x.indexOf(point.x);
-    const unlabeled_y_ind = prevState.unlabeled_y.indexOf(point.y);
-
-    // if(unlabeled_x_ind === -1 || unlabeled_y_ind === -1 || unlabeled_x_ind !== unlabeled_y_ind){
-    //   console.log('You have selected a point that is already labeled. Select an unlabeled point');
-    //   return prevState;
-    // }
 
     if(prevState.selected_x.length === new_selected_x.length){
       new_selected_x.push(point.x);
@@ -75,39 +86,40 @@ export default class Content extends Component {
 	});
 
   retrieveData = () => {
-    console.log('about to call axios');
-    axios.get('http://0.0.0.0:8000/restart')
-    .then(function (response) {
-      console.log('Response');
-      console.log(response);
-    })
-    .catch(function (error) {
-      console.log('error');
-      console.log(error);
-    });
+
   }
 
   restart = () =>
   {
-    //calls api, get's points, setState. This should be caled on
-    // componentdidmount
-    console.log('restart');
+    axios.get('http://0.0.0.0:8000/restart')
+    .then(function (response) {
+      const { data } = response;
+      this.setState((prevState) => {
+        return {
+          labeledData: data,
+          ...prevState,
+        }
+      });
+      console.log('done?');
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
   }
 
 	render() {
 		return (
 			<div className='content'>
 				 <Graph
-					class_A_x={this.state.class_A_x}
-					class_A_y={this.state.class_A_y}
-					class_B_x={this.state.class_B_x}
-					class_B_y={this.state.class_B_y}
+          labels={this.state.labels}
+          xAxis={this.state.xAxis}
+          yAxis={this.state.yAxis}
+					labeledData={this.state.labeledData}
 					unlabeled_x={this.state.unlabeled_x}
 					unlabeled_y={this.state.unlabeled_y}
 					selected_x={this.state.selected_x}
 					selected_y={this.state.selected_y}
 					handleDataClick={this.handleDataClick}
-					layout={this.state.layout}
 				/>
 				<Sidebar
 					num_selected={this.state.num_selected}
