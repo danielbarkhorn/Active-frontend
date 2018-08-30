@@ -15,25 +15,43 @@ export default (props) => {
     handleDataClick,
   } = props;
 
- const layout = {
-    width: 1000,
-    height: 600,
-    autosizer: 'true',
-    hovermode: 'closest',
-    showlegend: false,
-    xaxis: {
-      title: xAxis,
-    },
-    yaxis: {
-      title: yAxis,
+  const createLayout = () => {
+    return {
+      width: 1000,
+      height: 600,
+      autosizer: 'true',
+      hovermode: 'closest',
+      showlegend: true,
+      xaxis: {
+        title: xAxis,
+      },
+      yaxis: {
+        title: yAxis,
+      }
     }
   };
 
+  const createDataTrace = () => {
+    let dataTrace = []
 
+    labels.forEach((label) => {
+      var trace = {
+        x: labeledData[label][xAxis],
+        y: labeledData[label][yAxis],
+        mode: 'markers',
+        types: 'scatter',
+        legendgroup: label,
+      }
+      dataTrace.push(trace);
+    });
+
+    return dataTrace;
+  }
 
   return (
     <Plot
-      layout={layout}
+      data={createDataTrace()}
+      layout={createLayout()}
 			onClick={(e) => handleDataClick(e)}
 			useResizeHandler={true}
     />
