@@ -14,8 +14,7 @@ export default class Content extends Component {
       xAxis: '',
       yAxis: '',
 
-      unlabeled_x: [],
-      unlabeled_y: [],
+      unlabeledData: [],
 
       selected_x: [],
       selected_y: [],
@@ -44,10 +43,15 @@ export default class Content extends Component {
   }
 
   initializeStateFromData(data) {
-    const labels = Object.keys(data);
-    const initXAxis = Object.keys(data[labels[0]])[0];
-    const initYAxis = Object.keys(data[labels[0]])[1];
-    const features = Object.keys(data[labels[0]]);
+    const {
+      labeled,
+      unlabeled,
+    } = data;
+
+    const labels = Object.keys(labeled);
+    const initXAxis = Object.keys(labeled[labels[0]])[0];
+    const initYAxis = Object.keys(labeled[labels[0]])[1];
+    const features = Object.keys(labeled[labels[0]]);
 
     this.setState((prevState) => {
       return {
@@ -55,7 +59,8 @@ export default class Content extends Component {
         labels: labels,
         xAxis: initXAxis,
         yAxis: initYAxis,
-        labeledData: data,
+        labeledData: labeled,
+        unlabeledData: unlabeled,
         features: features,
       }
     });
@@ -65,7 +70,6 @@ export default class Content extends Component {
 		let { points: [ point ]} = e;
     let new_selected_x = prevState.selected_x.slice();
     let new_selected_y = prevState.selected_y.slice();
-    console.log(e);
 
 		for (let index = 0; index < new_selected_x.length; index++) {
 			if (prevState.selected_x[index] === point.x && prevState.selected_y[index] === point.y) {
@@ -111,8 +115,7 @@ export default class Content extends Component {
           xAxis={this.state.xAxis}
           yAxis={this.state.yAxis}
 					labeledData={this.state.labeledData}
-					unlabeled_x={this.state.unlabeled_x}
-					unlabeled_y={this.state.unlabeled_y}
+					unlabeledData={this.state.unlabeledData}
 					selected_x={this.state.selected_x}
 					selected_y={this.state.selected_y}
 					handleDataClick={this.handleDataClick}
