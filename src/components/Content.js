@@ -77,7 +77,7 @@ export default class Content extends Component {
 		}
 
     if(new_selected_x.length === this.state.max_selected || point.curveNumber !== 0) {
-      // make this an alert
+      // make this a pretty alert
       console.log('You have selected as many points as you are allowed, or you have tried to select a labeled point.');
       return;
     }
@@ -87,8 +87,6 @@ export default class Content extends Component {
   		new_selected_y.push(point.y);
       newDataRevision += 1;
     }
-
-    console.log(new_selected_x);
 
     this.setState((prevState) => {
   		return {
