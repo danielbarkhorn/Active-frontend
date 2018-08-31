@@ -8,8 +8,7 @@ export default (props) => {
     yAxis,
     labeledData,
     unlabeledData,
-    selected_x,
-    selected_y,
+    selectedData,
     handleDataClick,
     dataRevision,
   } = props;
@@ -54,6 +53,19 @@ export default (props) => {
       marker: {color: 'gray'},
     }
     dataTrace.push(unlabeledTrace);
+
+    const selectedTrace = {
+      x: selectedData[xAxis],
+      y: selectedData[yAxis],
+      mode: 'markers',
+      types: 'scatter',
+      name: 'Selected',
+      marker: {
+        color: '#f12c1b',
+        size: 12,
+      },
+    }
+    dataTrace.push(selectedTrace);
 
     return dataTrace;
   }
