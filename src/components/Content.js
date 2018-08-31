@@ -45,12 +45,14 @@ export default class Content extends Component {
       labeled,
       unlabeled,
       selected,
+      dataRevision,
     } = data;
 
     const labels = Object.keys(labeled);
     const initXAxis = Object.keys(labeled[labels[0]])[0];
     const initYAxis = Object.keys(labeled[labels[0]])[1];
     const features = Object.keys(labeled[labels[0]]);
+    const newDataRevision = dataRevision + 1;
 
     this.setState((prevState) => {
       return {
@@ -62,7 +64,24 @@ export default class Content extends Component {
         unlabeledData: unlabeled,
         selectedData: selected,
         features: features,
+        dataRevision: newDataRevision,
       }
+    });
+  }
+
+  labelSelectedPoints = () => {
+    axios.post('http://0.0.0.0:8000/label', {
+      labeled: this.state.labeledData,
+      unlabeled: this.state.unlabeledData,
+      selected: this.state.selectedData,
+    })
+    .then(response => response['data'])
+    .then(response => {
+      console.log(response);
+      this.initializeStateFromData(response);
+    })
+    .catch(function (error) {
+      console.log(error);
     });
   }
 
@@ -162,7 +181,7 @@ export default class Content extends Component {
 					num_selected={this.state.num_selected}
 					max_selected={this.state.max_selected}
 					add_selected={this.state.addSelected}
-          labelPoints={this.retrieveData}
+          labelPoints={this.labelSelectedPoints}
           restart={this.restart}
           xAxis={this.state.xAxis}
           yAxis={this.state.yAxis}
