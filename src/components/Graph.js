@@ -1,6 +1,5 @@
 import React from 'react';
 import Plot from 'react-plotly.js';
-import PropTypes from 'prop-types';
 
 export default (props) => {
   const {
@@ -12,6 +11,7 @@ export default (props) => {
     selected_x,
     selected_y,
     handleDataClick,
+    dataRevision,
   } = props;
 
   const createLayout = () => {
@@ -21,6 +21,7 @@ export default (props) => {
       autosizer: 'true',
       hovermode: 'closest',
       showlegend: true,
+      datarevision: dataRevision,
       xaxis: {
         title: xAxis,
       },
@@ -66,36 +67,3 @@ export default (props) => {
     />
   );
 }
-
-
-// data={[
-//   {
-//     x: class_A_x,
-//     y: class_A_y,
-//     mode: 'markers',
-//     type: 'scatter',
-//     marker: {color: 'blue'},
-//     legendgroup: 'I will show up in the legend',
-//   },
-//   {
-//     x: class_B_x,
-//     y: class_B_y,
-//     mode: 'markers',
-//     type: 'scatter',
-//     marker: {color: 'red'},
-//   },
-//   {
-//     x: unlabeled_x,
-//     y: unlabeled_y,
-//     mode: 'markers',
-//     type: 'scatter',
-//     marker: {color: 'gray'},
-//   },
-//   {
-//     x: selected_x,
-//     y: selected_y,
-//     mode: 'markers',
-//     type: 'scatter',
-//     marker: {color: 'purple'},
-//   }
-// ]}
