@@ -24,6 +24,7 @@ export default class Content extends Component {
 
 			num_selected: 0,
 			max_selected: 3,
+      dataRevision: 0,
 		}
 	}
 
@@ -61,37 +62,44 @@ export default class Content extends Component {
     });
   }
 
-	handleDataClick = (e) => this.setState((prevState) => {
+	handleDataClick = (e) => {
 		let { points: [ point ]} = e;
-    let new_selected_x = prevState.selected_x.slice();
-    let new_selected_y = prevState.selected_y.slice();
-    console.log(e);
+    let new_selected_x = this.state.selected_x.slice();
+    let new_selected_y = this.state.selected_y.slice();
+    let newDataRevision = this.state.dataRevision;
 
 		for (let index = 0; index < new_selected_x.length; index++) {
-			if (prevState.selected_x[index] === point.x && prevState.selected_y[index] === point.y) {
+			if (this.state.selected_x[index] === point.x && this.state.selected_y[index] === point.y) {
 				new_selected_x.splice(index, 1);
 				new_selected_y.splice(index, 1);
+        newDataRevision += 1;
 			}
 		}
 
     if(new_selected_x.length === this.state.max_selected || point.curveNumber !== 0) {
       // make this an alert
       console.log('You have selected as many points as you are allowed, or you have tried to select a labeled point.');
-      return prevState;
+      return;
     }
 
-    if(prevState.selected_x.length === new_selected_x.length){
+    if(this.state.selected_x.length === new_selected_x.length){
       new_selected_x.push(point.x);
   		new_selected_y.push(point.y);
+      newDataRevision += 1;
     }
 
-		return {
-			...prevState,
-			selected_x: new_selected_x,
-			selected_y: new_selected_y,
-      num_selected: new_selected_x.length,
-		};
-	});
+    console.log(new_selected_x);
+
+    this.setState((prevState) => {
+  		return {
+  			...prevState,
+  			selected_x: new_selected_x,
+  			selected_y: new_selected_y,
+        num_selected: new_selected_x.length,
+        dataRevision: newDataRevision,
+  		}
+    });
+	}
 
   handleXAxisChange = (e) => {
     const { target: { value } } = e;
@@ -116,6 +124,7 @@ export default class Content extends Component {
 					selected_x={this.state.selected_x}
 					selected_y={this.state.selected_y}
 					handleDataClick={this.handleDataClick}
+          dataRevision={this.state.dataRevision}
 				/>
 				<Sidebar
 					num_selected={this.state.num_selected}
