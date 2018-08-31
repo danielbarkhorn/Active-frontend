@@ -7,6 +7,8 @@ export default (props) => {
     xAxis,
     yAxis,
     labeledData,
+    unlabeledData,
+    selectedData,
     handleDataClick,
     dataRevision,
   } = props;
@@ -32,7 +34,7 @@ export default (props) => {
     let dataTrace = []
 
     labels.forEach((label) => {
-      var trace = {
+      const trace = {
         x: labeledData[label][xAxis],
         y: labeledData[label][yAxis],
         mode: 'markers',
@@ -41,6 +43,29 @@ export default (props) => {
       }
       dataTrace.push(trace);
     });
+
+    const unlabeledTrace = {
+      x: unlabeledData[xAxis],
+      y: unlabeledData[yAxis],
+      mode: 'markers',
+      types: 'scatter',
+      name: 'Unlabeled',
+      marker: {color: 'gray'},
+    }
+    dataTrace.push(unlabeledTrace);
+
+    const selectedTrace = {
+      x: selectedData[xAxis],
+      y: selectedData[yAxis],
+      mode: 'markers',
+      types: 'scatter',
+      name: 'Selected',
+      marker: {
+        color: '#f12c1b',
+        size: 12,
+      },
+    }
+    dataTrace.push(selectedTrace);
 
     return dataTrace;
   }

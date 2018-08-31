@@ -14,12 +14,8 @@ export default class Content extends Component {
       xAxis: '',
       yAxis: '',
 
-      unlabeled_x: [],
-      unlabeled_y: [],
-
-      selected_x: [],
-      selected_y: [],
-
+      unlabeledData: [],
+      selectedData: [],
 			labeledData: {},
 
 			num_selected: 0,
@@ -45,10 +41,18 @@ export default class Content extends Component {
   }
 
   initializeStateFromData(data) {
-    const labels = Object.keys(data);
-    const initXAxis = Object.keys(data[labels[0]])[0];
-    const initYAxis = Object.keys(data[labels[0]])[1];
-    const features = Object.keys(data[labels[0]]);
+    const {
+      labeled,
+      unlabeled,
+      selected,
+      dataRevision,
+    } = data;
+
+    const labels = Object.keys(labeled);
+    const initXAxis = Object.keys(labeled[labels[0]])[0];
+    const initYAxis = Object.keys(labeled[labels[0]])[1];
+    const features = Object.keys(labeled[labels[0]]);
+    const newDataRevision = dataRevision + 1;
 
     this.setState((prevState) => {
       return {
@@ -56,43 +60,82 @@ export default class Content extends Component {
         labels: labels,
         xAxis: initXAxis,
         yAxis: initYAxis,
-        labeledData: data,
+        labeledData: labeled,
+        unlabeledData: unlabeled,
+        selectedData: selected,
         features: features,
+        dataRevision: newDataRevision,
       }
     });
   }
 
+  labelSelectedPoints = () => {
+    axios.post('http://0.0.0.0:8000/label', {
+      labeled: this.state.labeledData,
+      unlabeled: this.state.unlabeledData,
+      selected: this.state.selectedData,
+    })
+    .then(response => response['data'])
+    .then(response => {
+      console.log(response);
+      this.initializeStateFromData(response);
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  }
+
 	handleDataClick = (e) => {
+    const {
+      selectedData,
+      unlabeledData,
+      xAxis,
+      yAxis,
+      dataRevision,
+      features,
+      max_selected
+    } = this.state;
+
 		let { points: [ point ]} = e;
-    let new_selected_x = this.state.selected_x.slice();
-    let new_selected_y = this.state.selected_y.slice();
-    let newDataRevision = this.state.dataRevision;
+    let new_selectedData = JSON.parse(JSON.stringify(selectedData));
+    let new_selected_x = new_selectedData[xAxis];
+    let new_selected_y = new_selectedData[yAxis];
+    let newDataRevision = dataRevision;
 
 		for (let index = 0; index < new_selected_x.length; index++) {
-			if (this.state.selected_x[index] === point.x && this.state.selected_y[index] === point.y) {
-				new_selected_x.splice(index, 1);
-				new_selected_y.splice(index, 1);
+			if (selectedData[xAxis][index] === point.x && selectedData[yAxis][index] === point.y) {
+        for (let featInd = 0; featInd < features.length; featInd++) {
+          new_selectedData[features[featInd]].splice(index, 1);
+        }
+        console.log('removing');
         newDataRevision += 1;
 			}
 		}
 
-    if(new_selected_x.length === this.state.max_selected || point.curveNumber !== 0) {
+    if(new_selected_x.length === max_selected || (point.curveNumber !== 3 && point.curveNumber !== 4)) {
       // make this a pretty alert
       console.log('You have selected as many points as you are allowed, or you have tried to select a labeled point.');
       return;
     }
 
-    if(this.state.selected_x.length === new_selected_x.length){
-      new_selected_x.push(point.x);
-  		new_selected_y.push(point.y);
-      newDataRevision += 1;
+    if(selectedData[xAxis].length === new_selected_x.length){
+      for(let unlabeledInd = 0; unlabeledInd < unlabeledData[features[0]].length; unlabeledInd++){
+        if(unlabeledData[xAxis][unlabeledInd] === point.x && unlabeledData[yAxis][unlabeledInd] === point.y){
+          for (let featInd = 0; featInd < features.length; featInd++) {
+            new_selectedData[features[featInd]].push(unlabeledData[features[featInd]][unlabeledInd]);
+          }
+          newDataRevision += 1;
+          break;
+        }
+      }
     }
+
+    console.log(new_selectedData);
 
     this.setState((prevState) => {
   		return {
   			...prevState,
-  			selected_x: new_selected_x,
-  			selected_y: new_selected_y,
+  			selectedData: new_selectedData,
         num_selected: new_selected_x.length,
         dataRevision: newDataRevision,
   		}
@@ -101,12 +144,24 @@ export default class Content extends Component {
 
   handleXAxisChange = (e) => {
     const { target: { value } } = e;
-    this.setState(() => ({ xAxis: value}));
+    const newDataRevision = this.state.dataRevision + 1;
+    this.setState(() => (
+      {
+        xAxis: value,
+        dataRevision: newDataRevision,
+      }
+    ));
   }
 
   handleYAxisChange = (e) => {
     const { target: { value } } = e;
-    this.setState(() => ({ yAxis: value}));
+    const newDataRevision = this.state.dataRevision + 1;
+    this.setState(() => (
+      {
+        yAxis: value,
+        dataRevision: newDataRevision,
+      }
+    ));
   }
 
 	render() {
@@ -117,10 +172,8 @@ export default class Content extends Component {
           xAxis={this.state.xAxis}
           yAxis={this.state.yAxis}
 					labeledData={this.state.labeledData}
-					unlabeled_x={this.state.unlabeled_x}
-					unlabeled_y={this.state.unlabeled_y}
-					selected_x={this.state.selected_x}
-					selected_y={this.state.selected_y}
+					unlabeledData={this.state.unlabeledData}
+					selectedData={this.state.selectedData}
 					handleDataClick={this.handleDataClick}
           dataRevision={this.state.dataRevision}
 				/>
@@ -128,7 +181,7 @@ export default class Content extends Component {
 					num_selected={this.state.num_selected}
 					max_selected={this.state.max_selected}
 					add_selected={this.state.addSelected}
-          labelPoints={this.retrieveData}
+          labelPoints={this.labelSelectedPoints}
           restart={this.restart}
           xAxis={this.state.xAxis}
           yAxis={this.state.yAxis}
