@@ -13,6 +13,7 @@ export default (props) => {
 		features,
 		handleXAxisChange,
 		handleYAxisChange,
+		activeSelect,
 	} = props;
 
 	const makeOption = (name) => {
@@ -35,6 +36,11 @@ export default (props) => {
 				isDisabled={num_selected !== max_selected}
 				label='Restart Demo'
 				onClick={restart}
+			/>
+			<Button
+				className='button button-restart'
+				label='Active Select'
+				onClick={activeSelect}
 			/>
 			<select
 				onChange={handleXAxisChange}

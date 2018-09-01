@@ -53,6 +53,7 @@ export default class Content extends Component {
     const initYAxis = Object.keys(labeled[labels[0]])[1];
     const features = Object.keys(labeled[labels[0]]);
     const newDataRevision = dataRevision + 1;
+    const num_selected = selected[features[0]].length
 
     this.setState((prevState) => {
       return {
@@ -65,6 +66,30 @@ export default class Content extends Component {
         selectedData: selected,
         features: features,
         dataRevision: newDataRevision,
+        num_selected: num_selected,
+      }
+    });
+  }
+
+  setStateFromData(data) {
+    const {
+      labeled,
+      unlabeled,
+      selected,
+      dataRevision,
+    } = data;
+
+    const newDataRevision = dataRevision + 1;
+    const num_selected = selected[this.state.features[0]].length
+
+    this.setState((prevState) => {
+      return {
+        ...prevState,
+        labeledData: labeled,
+        unlabeledData: unlabeled,
+        selectedData: selected,
+        dataRevision: newDataRevision,
+        num_selected: num_selected,
       }
     });
   }
@@ -77,8 +102,22 @@ export default class Content extends Component {
     })
     .then(response => response['data'])
     .then(response => {
-      console.log(response);
-      this.initializeStateFromData(response);
+      this.setStateFromData(response);
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  }
+
+  activeSelect = () => {
+    axios.post('http://0.0.0.0:8000/activeSelect', {
+      labeled: this.state.labeledData,
+      unlabeled: this.state.unlabeledData,
+      selected: this.state.selectedData,
+    })
+    .then(response => response['data'])
+    .then(response => {
+      this.setStateFromData(response);
     })
     .catch(function (error) {
       console.log(error);
@@ -107,7 +146,6 @@ export default class Content extends Component {
         for (let featInd = 0; featInd < features.length; featInd++) {
           new_selectedData[features[featInd]].splice(index, 1);
         }
-        console.log('removing');
         newDataRevision += 1;
 			}
 		}
@@ -182,6 +220,7 @@ export default class Content extends Component {
 					max_selected={this.state.max_selected}
 					add_selected={this.state.addSelected}
           labelPoints={this.labelSelectedPoints}
+          activeSelect={this.activeSelect}
           restart={this.restart}
           xAxis={this.state.xAxis}
           yAxis={this.state.yAxis}
