@@ -21,6 +21,7 @@ export default class Content extends Component {
 			num_selected: 0,
 			max_selected: 3,
       dataRevision: 0,
+      empty: [],
 		}
 	}
 
@@ -55,6 +56,11 @@ export default class Content extends Component {
     const newDataRevision = dataRevision + 1;
     const num_selected = selected[features[0]].length
 
+    let empty = {};
+    for(let featInd = 0; featInd < features.length; featInd++) {
+      empty[features[featInd]] = [];
+    }
+
     this.setState((prevState) => {
       return {
         ...prevState,
@@ -67,6 +73,7 @@ export default class Content extends Component {
         features: features,
         dataRevision: newDataRevision,
         num_selected: num_selected,
+        empty: empty
       }
     });
   }
@@ -186,7 +193,10 @@ export default class Content extends Component {
 
   handleMaxSelectedChange = (e) => {
     const { target: { value } } = e;
-    this.setState(() => ({ max_selected: parseInt(value), }));
+    this.setState((prevState) => ({
+      max_selected: parseInt(value),
+      selectedData: prevState.empty,
+    }));
   }
 
   handleXAxisChange = (e) => {
