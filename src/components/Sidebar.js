@@ -1,11 +1,10 @@
-import React, { Component } from 'react';
+import React from 'react';
 import Button from './Button.js';
 
 export default (props) => {
 	const {
 		num_selected,
 		max_selected,
-		add_selected,
 		labelPoints,
 		restart,
 		xAxis,
@@ -13,6 +12,7 @@ export default (props) => {
 		features,
 		handleXAxisChange,
 		handleYAxisChange,
+		handleMaxSelectedChange,
 		activeSelect,
 	} = props;
 
@@ -49,11 +49,17 @@ export default (props) => {
 			  {features.map(makeOption)}
 			</select>
 			<select
-			onChange={handleYAxisChange}
+				onChange={handleYAxisChange}
 				value={yAxis}
 			>
 		  	{features.map(makeOption)}
 			</select>
+			<input
+				type="number"
+				onChange={handleMaxSelectedChange}
+				value={max_selected}
+				min={1}
+				max={10}/>
 		</div>
 	)
 }

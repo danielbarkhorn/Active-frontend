@@ -95,18 +95,23 @@ export default class Content extends Component {
   }
 
   labelSelectedPoints = () => {
-    axios.post('http://0.0.0.0:8000/label', {
-      labeled: this.state.labeledData,
-      unlabeled: this.state.unlabeledData,
-      selected: this.state.selectedData,
-    })
-    .then(response => response['data'])
-    .then(response => {
-      this.setStateFromData(response);
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
+    if(this.state.num_selected === this.state.max_selected){
+      axios.post('http://0.0.0.0:8000/label', {
+        labeled: this.state.labeledData,
+        unlabeled: this.state.unlabeledData,
+        selected: this.state.selectedData,
+      })
+      .then(response => response['data'])
+      .then(response => {
+        this.setStateFromData(response);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    }
+    else {
+      console.log('Selected more points to label');
+    }
   }
 
   activeSelect = () => {
@@ -114,6 +119,7 @@ export default class Content extends Component {
       labeled: this.state.labeledData,
       unlabeled: this.state.unlabeledData,
       selected: this.state.selectedData,
+      numChosen: this.state.max_selected,
     })
     .then(response => response['data'])
     .then(response => {
@@ -168,8 +174,6 @@ export default class Content extends Component {
       }
     }
 
-    console.log(new_selectedData);
-
     this.setState((prevState) => {
   		return {
   			...prevState,
@@ -179,6 +183,11 @@ export default class Content extends Component {
   		}
     });
 	}
+
+  handleMaxSelectedChange = (e) => {
+    const { target: { value } } = e;
+    this.setState(() => ({ max_selected: parseInt(value), }));
+  }
 
   handleXAxisChange = (e) => {
     const { target: { value } } = e;
@@ -227,6 +236,7 @@ export default class Content extends Component {
           features={this.state.features}
           handleXAxisChange={this.handleXAxisChange}
           handleYAxisChange={this.handleYAxisChange}
+          handleMaxSelectedChange={this.handleMaxSelectedChange}
 				/>
 			</div>
 		);
