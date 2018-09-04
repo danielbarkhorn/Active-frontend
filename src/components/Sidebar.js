@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
+import React from 'react';
 import Button from './Button.js';
+import Modal from 'react-modal';
 
 export default (props) => {
 	const {
 		num_selected,
 		max_selected,
-		add_selected,
 		labelPoints,
 		restart,
 		xAxis,
@@ -13,7 +13,10 @@ export default (props) => {
 		features,
 		handleXAxisChange,
 		handleYAxisChange,
+		handleMaxSelectedChange,
 		activeSelect,
+		num_labeled,
+		max_labeled,
 	} = props;
 
 	const makeOption = (name) => {
@@ -22,8 +25,11 @@ export default (props) => {
 
 	return (
 		<div className='sidebar'>
-			<div className='sidebar-count'>
+			<div className='sidebar__selected-count'>
 				{num_selected} / {max_selected} points chosen.
+			</div>
+			<div className='sidebar__labeled-count'>
+				{num_labeled} / {max_labeled} points labeled.
 			</div>
 			<Button
 				className='button button-label'
@@ -49,11 +55,19 @@ export default (props) => {
 			  {features.map(makeOption)}
 			</select>
 			<select
-			onChange={handleYAxisChange}
+				onChange={handleYAxisChange}
 				value={yAxis}
 			>
 		  	{features.map(makeOption)}
 			</select>
+			<input
+				className='sidebar_max-selection'
+				type="number"
+				onChange={handleMaxSelectedChange}
+				value={max_selected}
+				min={1}
+				max={10}
+			/>
 		</div>
 	)
 }

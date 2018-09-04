@@ -3,10 +3,24 @@ import '../assets/styles/main.scss';
 import Graph from '../components/Graph.js';
 import Sidebar from '../components/Sidebar.js';
 import axios from 'axios';
+import Modal from 'react-modal';
+import { withAlert } from "react-alert";
 
-export default class Content extends Component {
+class Content extends Component {
   constructor(props) {
 		super(props);
+    const max_labeled_list = {
+      1: 20,
+      2: 20,
+      3: 21,
+      4: 20,
+      5: 20,
+      6: 18,
+      7: 21,
+      8: 16,
+      9: 18,
+      10:20,
+    };
 
 		this.state = {
       labels: [],
@@ -18,9 +32,15 @@ export default class Content extends Component {
       selectedData: [],
 			labeledData: {},
 
+      num_labeled: 0,
+      max_labeled_list,
+      max_labeled: max_labeled_list[3],
 			num_selected: 0,
 			max_selected: 3,
       dataRevision: 0,
+      empty: [],
+      test_X: [],
+      test_Y: [],
 		}
 	}
 
@@ -46,6 +66,8 @@ export default class Content extends Component {
       unlabeled,
       selected,
       dataRevision,
+      test_X,
+      test_Y,
     } = data;
 
     const labels = Object.keys(labeled);
@@ -53,7 +75,11 @@ export default class Content extends Component {
     const initYAxis = Object.keys(labeled[labels[0]])[1];
     const features = Object.keys(labeled[labels[0]]);
     const newDataRevision = dataRevision + 1;
-    const num_selected = selected[features[0]].length
+
+    let empty = {};
+    for(let featInd = 0; featInd < features.length; featInd++) {
+      empty[features[featInd]] = [];
+    }
 
     this.setState((prevState) => {
       return {
@@ -66,7 +92,9 @@ export default class Content extends Component {
         selectedData: selected,
         features: features,
         dataRevision: newDataRevision,
-        num_selected: num_selected,
+        empty: empty,
+        test_X: test_X,
+        test_Y: test_Y,
       }
     });
   }
@@ -77,10 +105,12 @@ export default class Content extends Component {
       unlabeled,
       selected,
       dataRevision,
+      numLabeled,
     } = data;
 
     const newDataRevision = dataRevision + 1;
     const num_selected = selected[this.state.features[0]].length
+    let newNumLabeled = numLabeled ? numLabeled : this.state.num_labeled
 
     this.setState((prevState) => {
       return {
@@ -90,38 +120,71 @@ export default class Content extends Component {
         selectedData: selected,
         dataRevision: newDataRevision,
         num_selected: num_selected,
+        num_labeled: newNumLabeled,
       }
     });
   }
 
   labelSelectedPoints = () => {
-    axios.post('http://0.0.0.0:8000/label', {
-      labeled: this.state.labeledData,
-      unlabeled: this.state.unlabeledData,
-      selected: this.state.selectedData,
-    })
-    .then(response => response['data'])
-    .then(response => {
-      this.setStateFromData(response);
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
+    if(this.state.num_selected === this.state.max_selected){
+      if((this.state.num_selected + this.state.num_labeled) === this.state.max_labeled){
+        axios.post('http://0.0.0.0:8000/labelAndTest', {
+          labeled: this.state.labeledData,
+          unlabeled: this.state.unlabeledData,
+          selected: this.state.selectedData,
+          numLabeled: this.state.num_labeled,
+          test_X: this.state.test_X,
+          test_Y: this.state.test_Y,
+        })
+        .then(response => response['data'])
+        .then(response => {
+          console.log(response)
+          this.setStateFromData(response);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+      }
+      else {
+        axios.post('http://0.0.0.0:8000/label', {
+          labeled: this.state.labeledData,
+          unlabeled: this.state.unlabeledData,
+          selected: this.state.selectedData,
+          numLabeled: this.state.num_labeled,
+        })
+        .then(response => response['data'])
+        .then(response => {
+          this.setStateFromData(response);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+      }
+    }
+    else {
+      this.props.alert.show('Select more points to label');
+    }
   }
 
   activeSelect = () => {
-    axios.post('http://0.0.0.0:8000/activeSelect', {
-      labeled: this.state.labeledData,
-      unlabeled: this.state.unlabeledData,
-      selected: this.state.selectedData,
-    })
-    .then(response => response['data'])
-    .then(response => {
-      this.setStateFromData(response);
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
+    if(this.state.num_labeled !== this.state.max_labeled){
+      axios.post('http://0.0.0.0:8000/activeSelect', {
+        labeled: this.state.labeledData,
+        unlabeled: this.state.unlabeledData,
+        selected: this.state.selectedData,
+        numChosen: this.state.max_selected,
+      })
+      .then(response => response['data'])
+      .then(response => {
+        this.setStateFromData(response);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    }
+    else{
+      console.log('You have completed the demo');
+    }
   }
 
 	handleDataClick = (e) => {
@@ -138,7 +201,6 @@ export default class Content extends Component {
 		let { points: [ point ]} = e;
     let new_selectedData = JSON.parse(JSON.stringify(selectedData));
     let new_selected_x = new_selectedData[xAxis];
-    let new_selected_y = new_selectedData[yAxis];
     let newDataRevision = dataRevision;
 
 		for (let index = 0; index < new_selected_x.length; index++) {
@@ -150,9 +212,13 @@ export default class Content extends Component {
 			}
 		}
 
-    if(new_selected_x.length === max_selected || (point.curveNumber !== 3 && point.curveNumber !== 4)) {
-      // make this a pretty alert
-      console.log('You have selected as many points as you are allowed, or you have tried to select a labeled point.');
+    if(new_selected_x.length === max_selected) {
+      this.props.alert.error('You have tried to select too many points. You can deselect points by clicking on a selected point.');
+      return;
+    }
+
+    if(point.curveNumber !== 3 && point.curveNumber !== 4) {
+      this.props.alert.error('You have tried to select a labeled point.');
       return;
     }
 
@@ -168,8 +234,6 @@ export default class Content extends Component {
       }
     }
 
-    console.log(new_selectedData);
-
     this.setState((prevState) => {
   		return {
   			...prevState,
@@ -179,6 +243,17 @@ export default class Content extends Component {
   		}
     });
 	}
+
+  handleMaxSelectedChange = (e) => {
+    if(this.state.num_labeled === 0){
+      const { target: { value } } = e;
+      this.setState((prevState) => ({
+        max_selected: parseInt(value),
+        selectedData: prevState.empty,
+        max_labeled: prevState.max_labeled_list[parseInt(value)]
+      }));
+    }
+  }
 
   handleXAxisChange = (e) => {
     const { target: { value } } = e;
@@ -218,6 +293,8 @@ export default class Content extends Component {
 				<Sidebar
 					num_selected={this.state.num_selected}
 					max_selected={this.state.max_selected}
+          num_labeled={this.state.num_labeled}
+          max_labeled={this.state.max_labeled}
 					add_selected={this.state.addSelected}
           labelPoints={this.labelSelectedPoints}
           activeSelect={this.activeSelect}
@@ -227,8 +304,11 @@ export default class Content extends Component {
           features={this.state.features}
           handleXAxisChange={this.handleXAxisChange}
           handleYAxisChange={this.handleYAxisChange}
+          handleMaxSelectedChange={this.handleMaxSelectedChange}
 				/>
 			</div>
 		);
 	}
 }
+
+export default withAlert(Content);
