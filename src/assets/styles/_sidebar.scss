@@ -3,4 +3,20 @@
 	border-left: 1px $border-blue solid;
 	padding: 0 1em;
 	width: (10 * $base-spacing);
+
+	&_max-selection {
+		border-radius: 1em;
+		padding: 1em;
+		margin: 2em 0;
+		font-weight: 600;
+		color: $text-blue;
+		background-color: $background;
+		border: 1px $border-blue solid;
+
+		&--disabled {
+			background-color: $border-gray;
+			color: $background;
+			border: 1px $border-gray solid;
+		}
+	}
 }
