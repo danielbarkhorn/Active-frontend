@@ -57,7 +57,7 @@ class Content extends Component {
 
   restart = () =>
   {
-    axios.get('http://127.0.0.1:8000/restart')
+    axios.get('http://0.0.0.0:8000/restart')
     .then(response => response['data'])
     .then(response => {
       this.initializeStateFromData(response);
@@ -137,7 +137,7 @@ class Content extends Component {
   labelSelectedPoints = () => {
     if(this.state.num_selected === this.state.max_selected){
       if((this.state.num_selected + this.state.num_labeled) === this.state.max_labeled){
-        axios.post('http://127.0.0.1:8000/labelAndTest', {
+        axios.post('http://0.0.0.0:8000/labelAndTest', {
           labeled: this.state.labeledData,
           unlabeled: this.state.unlabeledData,
           selected: this.state.selectedData,
@@ -159,7 +159,7 @@ class Content extends Component {
         });
       }
       else {
-        axios.post('http://127.0.0.1:8000/label', {
+        axios.post('http://0.0.0.0:8000/label', {
           labeled: this.state.labeledData,
           unlabeled: this.state.unlabeledData,
           selected: this.state.selectedData,
@@ -181,7 +181,7 @@ class Content extends Component {
 
   activeSelect = () => {
     if(this.state.num_labeled !== this.state.max_labeled){
-      axios.post('http://127.0.0.1:8000/activeSelect', {
+      axios.post('http://0.0.0.0:8000/activeSelect', {
         labeled: this.state.labeledData,
         unlabeled: this.state.unlabeledData,
         selected: this.state.selectedData,
