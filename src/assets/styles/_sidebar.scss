@@ -3,4 +3,66 @@
 	border-left: 1px $border-blue solid;
 	padding: 0 1em;
 	width: (10 * $base-spacing);
+	height: 100vh;
+
+	&__max-selection {
+		border-radius: 1em;
+		padding: .5em;
+		margin: .25em 0 1em;
+		font-weight: 600;
+		font-size: 1.25em;
+		color: $text-blue;
+		background-color: $background;
+		border: 1px $border-blue solid;
+
+		&:active {
+			outline: none;
+		}
+
+		&:focus {
+			outline: none;
+		}
+
+		&--disabled {
+			background-color: $border-gray;
+			color: $background;
+			border: 1px $border-gray solid;
+		}
+	}
+
+	&__selected-count {
+		padding: 1em 0;
+		font-weight: 600;
+		color: $text-blue;
+	}
+
+	&__labeled-count {
+		padding: 1em 0;
+		font-weight: 600;
+		color: $text-blue;
+	}
+
+	&__axis {
+		background-color: $background;
+		display: block;
+		border: 1px $border-blue solid;
+		color: $text-blue;
+		height: 3em;
+		font-weight: 600;
+		margin: .25em 0 2em;
+
+		&:active {
+			outline: none;
+		}
+
+		&:focus {
+			outline: none;
+		}
+	}
+
+	&__label {
+		color: $text-blue;
+		font-weight: 500;
+		padding-top: 1em;
+	}
 }

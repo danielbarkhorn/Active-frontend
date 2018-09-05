@@ -8,7 +8,7 @@ export default (props) => {
 		label,
 	} = props;
 
-	var buttonStyle = className + (isDisabled ? '--disabled' : '');
+	var buttonStyle = 'button ' + className + (isDisabled ? '--disabled' : '');
 
 	return (
 		<button
