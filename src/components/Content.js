@@ -1,10 +1,12 @@
 import React, { Component, Fragment } from 'react';
 import '../assets/styles/main.scss';
-import Graph from '../components/Graph.js';
-import Sidebar from '../components/Sidebar.js';
+import Graph from './Graph.js';
+import Sidebar from './Sidebar.js';
 import axios from 'axios';
 import Modal from 'react-modal';
-import { withAlert } from "react-alert";
+import Button from './Button.js';
+import { withAlert } from 'react-alert';
+import { renderStartModal, renderEndModal } from './Modal.js'
 
 class Content extends Component {
   constructor(props) {
@@ -41,6 +43,9 @@ class Content extends Component {
       empty: [],
       test_X: [],
       test_Y: [],
+      results: '',
+      isStartOpen: true,
+      isEndOpen: false,
 		}
 	}
 
@@ -138,8 +143,12 @@ class Content extends Component {
         })
         .then(response => response['data'])
         .then(response => {
-          console.log(response)
+          console.log(response);
           this.setStateFromData(response);
+          this.setState({
+            isEndOpen: true,
+            results: response['results'],
+          });
         })
         .catch(function (error) {
           console.log(error);
@@ -183,7 +192,7 @@ class Content extends Component {
       });
     }
     else{
-      console.log('You have completed the demo');
+      this.props.alert.success('You have completed the demo');
     }
   }
 
@@ -277,10 +286,40 @@ class Content extends Component {
     ));
   }
 
+  closeStartModal = () => {
+    this.setState({ isStartOpen: false});
+  }
+
+  closeEndModal = () => {
+    this.setState({ isEndOpen: false});
+  }
+
 	render() {
 		return (
 			<div className='content'>
-				 <Graph
+        <Modal
+          isOpen={this.state.isStartOpen}
+          onRequestClose={this.closeStartModal}
+        >
+          {renderStartModal()}
+        	<Button
+    				onClick={this.closeStartModal}
+    				label={'Close'}
+            className={'button--small'}
+    			/>
+        </Modal>
+        <Modal
+          isOpen={this.state.isEndOpen}
+          onRequestClose={this.closeEndModal}
+        >
+          {renderEndModal(this.state.results)}
+        	<Button
+    				onClick={this.closeEndModal}
+    				label={'Close'}
+            className={'button--small'}
+    			/>
+        </Modal>
+  			<Graph
           labels={this.state.labels}
           xAxis={this.state.xAxis}
           yAxis={this.state.yAxis}

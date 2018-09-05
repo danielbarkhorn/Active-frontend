@@ -1,6 +1,5 @@
 import React from 'react';
 import Button from './Button.js';
-import Modal from 'react-modal';
 
 export default (props) => {
 	const {
