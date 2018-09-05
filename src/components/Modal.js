@@ -1,22 +1,4 @@
-import React, { Component, Fragment } from 'react';
-import Button from './Button.js';
-// import Modal from 'react-modal';
-//
-// export default class CustomModal extends Component {
-// 	constructor(props) {
-// 		super(props);
-//
-// 		this.state = {
-//
-// 		}
-// 	}
-//
-// 	const {
-// 		type,
-// 		results,
-// 		isOpen,
-// 		closeModal,
-// 	} = props;
+import React, { Fragment } from 'react';
 
 export const renderStartModal = () => {
 	return (
@@ -64,16 +46,3 @@ export const renderEndModal = (results) => {
 		</Fragment>
 	)
 }
-
-//   handleCloseModal = () => {
-//     this.setState( {isStartOpen: false} );
-//   }
-//
-//   return (
-//     <Modal
-// 			isOpen={isOpen}
-// 		>
-// 			{type === 'Start' ? this.renderStartModal : this.renderEndModal}
-// 		</Modal>
-// 	);
-// }
