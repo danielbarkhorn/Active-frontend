@@ -19,7 +19,12 @@ export default (props) => {
 	} = props;
 
 	const makeOption = (name) => {
-		return <option key={name} value={name}>{name}</option>;
+		return <option
+			key={name}
+			value={name}
+		>
+			{name}
+		</option>;
 	}
 
 	return (
@@ -30,6 +35,17 @@ export default (props) => {
 			<div className='sidebar__labeled-count'>
 				{num_labeled} / {max_labeled} points labeled.
 			</div>
+			<div className={'sidebar__label'}>
+				Number of points to select per iteration:
+			</div>
+			<input
+				className='sidebar__max-selection'
+				type="number"
+				onChange={handleMaxSelectedChange}
+				value={max_selected}
+				min={1}
+				max={10}
+			/>
 			<Button
 				className='button button-label'
 				isDisabled={num_selected !== max_selected}
@@ -47,26 +63,26 @@ export default (props) => {
 				label='Active Select'
 				onClick={activeSelect}
 			/>
+			<div className={'sidebar__label'}>
+				X-Axis
+			</div>
 			<select
+				className='sidebar__axis'
 				onChange={handleXAxisChange}
 				value={xAxis}
 			>
 			  {features.map(makeOption)}
 			</select>
+			<div className={'sidebar__label'}>
+				Y-Axis
+			</div>
 			<select
+				className='sidebar__axis'
 				onChange={handleYAxisChange}
 				value={yAxis}
 			>
 		  	{features.map(makeOption)}
 			</select>
-			<input
-				className='sidebar_max-selection'
-				type="number"
-				onChange={handleMaxSelectedChange}
-				value={max_selected}
-				min={1}
-				max={10}
-			/>
 		</div>
 	)
 }
