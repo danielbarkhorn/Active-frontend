@@ -2,7 +2,7 @@
 
 Active Learning frontend built with React and react-plotly.
 
-### Set up development
+### Set up development environment
 `git clone https://github.com/danielbarkhorn/Active-frontend.git`
 
 `yarn install`
