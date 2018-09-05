@@ -70,12 +70,20 @@ export default (props) => {
     return dataTrace;
   }
 
+  const config = {
+      showLink: false,
+      displayModeBar: false,
+    }
+
   return (
-    <Plot
-      data={createDataTrace()}
-      layout={createLayout()}
-			onClick={(e) => handleDataClick(e)}
-			useResizeHandler={true}
-    />
+    <div className='graph-container'>
+      <Plot
+        data={createDataTrace()}
+        layout={createLayout()}
+  			onClick={(e) => handleDataClick(e)}
+  			useResizeHandler={true}
+        config={config}
+      />
+    </div>
   );
 }

@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import '../assets/styles/main.scss';
 import Graph from './Graph.js';
 import Sidebar from './Sidebar.js';
@@ -7,6 +7,8 @@ import Modal from 'react-modal';
 import Button from './Button.js';
 import { withAlert } from 'react-alert';
 import { renderStartModal, renderEndModal } from './Modal.js'
+
+Modal.setAppElement(document.getElementById('root'));
 
 class Content extends Component {
   constructor(props) {
@@ -97,6 +99,8 @@ class Content extends Component {
         selectedData: selected,
         features: features,
         dataRevision: newDataRevision,
+        num_labeled: 0,
+  			num_selected: 0,
         empty: empty,
         test_X: test_X,
         test_Y: test_Y,
@@ -208,7 +212,7 @@ class Content extends Component {
     } = this.state;
 
 		let { points: [ point ]} = e;
-    let new_selectedData = JSON.parse(JSON.stringify(selectedData));
+    let new_selectedData = JSON.parse(JSON.stringify(selectedData), 10);
     let new_selected_x = new_selectedData[xAxis];
     let newDataRevision = dataRevision;
 
@@ -257,9 +261,9 @@ class Content extends Component {
     if(this.state.num_labeled === 0){
       const { target: { value } } = e;
       this.setState((prevState) => ({
-        max_selected: parseInt(value),
+        max_selected: parseInt(value, 10),
         selectedData: prevState.empty,
-        max_labeled: prevState.max_labeled_list[parseInt(value)]
+        max_labeled: prevState.max_labeled_list[parseInt(value, 10)]
       }));
     }
   }
