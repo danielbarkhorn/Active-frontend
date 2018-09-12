@@ -4,7 +4,7 @@ export class Header extends Component {
 	render() {
 		return (
 			<div className='header'>
-				Active Learning
+				Active Learbing
 			</div>
 		)
 	}
