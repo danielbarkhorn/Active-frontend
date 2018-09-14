@@ -35,7 +35,7 @@ export default (props) => {
 			<div className='sidebar__labeled-count'>
 				{num_labeled} / {max_labeled} points labeled.
 			</div>
-			<div className={'sidebar__label'}>
+			<div className='sidebar__label'>
 				Number of points to select per iteration:
 			</div>
 			<input
