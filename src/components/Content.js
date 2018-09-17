@@ -57,7 +57,7 @@ class Content extends Component {
 
   restart = () =>
   {
-    axios.get('https://active-backend.uhdjzpybqg.us-east-1.elasticbeanstalk.com/restart')
+    axios.get('https://www.active-demo.net/restart')
     .then(response => response['data'])
     .then(response => {
       this.initializeStateFromData(response);
@@ -137,7 +137,7 @@ class Content extends Component {
   labelSelectedPoints = () => {
     if(this.state.num_selected === this.state.max_selected){
       if((this.state.num_selected + this.state.num_labeled) === this.state.max_labeled){
-        axios.post('https://active-backend.uhdjzpybqg.us-east-1.elasticbeanstalk.com/labelAndTest', {
+        axios.post('https://www.active-demo.net/labelAndTest', {
           labeled: this.state.labeledData,
           unlabeled: this.state.unlabeledData,
           selected: this.state.selectedData,
@@ -159,7 +159,7 @@ class Content extends Component {
         });
       }
       else {
-        axios.post('https://active-backend.uhdjzpybqg.us-east-1.elasticbeanstalk.com/label', {
+        axios.post('https://www.active-demo.net/label', {
           labeled: this.state.labeledData,
           unlabeled: this.state.unlabeledData,
           selected: this.state.selectedData,
@@ -181,7 +181,7 @@ class Content extends Component {
 
   activeSelect = () => {
     if(this.state.num_labeled !== this.state.max_labeled){
-      axios.post('https://active-backend.uhdjzpybqg.us-east-1.elasticbeanstalk.com/activeSelect', {
+      axios.post('https://www.active-demo.net/activeSelect', {
         labeled: this.state.labeledData,
         unlabeled: this.state.unlabeledData,
         selected: this.state.selectedData,
