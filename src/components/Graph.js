@@ -11,6 +11,7 @@ export default (props) => {
     selectedData,
     handleDataClick,
     dataRevision,
+    decisionData,
   } = props;
 
   const createLayout = () => {
@@ -66,6 +67,21 @@ export default (props) => {
       },
     }
     dataTrace.push(selectedTrace);
+
+    console.log(decisionData);
+
+    const decisionTrace = {
+      x: decisionData.map(x => x[2]),
+      y: decisionData.map(x => x[3]),
+      mode: 'markers',
+      types: 'scatter',
+      name: 'Unlabeled',
+      marker: {
+        color: 'blue',
+        size: 12,
+      },
+    }
+    dataTrace.push(decisionTrace);
 
     return dataTrace;
   }

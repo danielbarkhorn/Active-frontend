@@ -43,4 +43,16 @@
 			border: 1px $border-gray solid;
 		}
 	}
+
+	&-green {
+		border: 1px $border-green solid;
+		color: $border-green;
+
+		&:hover {
+			color: #FDFDFD;
+			background-color: $border-green;
+			border: 1px $background solid;
+			cursor: pointer;
+		}
+	}
 }

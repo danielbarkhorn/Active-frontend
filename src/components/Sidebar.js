@@ -3,6 +3,7 @@ import Button from './Button.js';
 
 export default (props) => {
 	const {
+		toggle_instructions,
 		num_selected,
 		max_selected,
 		labelPoints,
@@ -29,6 +30,11 @@ export default (props) => {
 
 	return (
 		<div className='sidebar'>
+			<Button
+				className='button button-green'
+				label='Instructions'
+				onClick={toggle_instructions}
+			/>
 			<div className='sidebar__selected-count'>
 				{num_selected} / {max_selected} points chosen.
 			</div>

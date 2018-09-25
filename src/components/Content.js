@@ -35,6 +35,7 @@ class Content extends Component {
       unlabeledData: [],
       selectedData: [],
 			labeledData: {},
+      decisionData: [],
 
       num_labeled: 0,
       max_labeled_list,
@@ -46,7 +47,7 @@ class Content extends Component {
       test_X: [],
       test_Y: [],
       results: '',
-      isStartOpen: true,
+      isStartOpen: false,
       isEndOpen: false,
 		}
 	}
@@ -57,7 +58,7 @@ class Content extends Component {
 
   restart = () =>
   {
-    axios.get('https://www.active-demo.net/restart')
+    axios.get('http://0.0.0.0:8001/restart')
     .then(response => response['data'])
     .then(response => {
       this.initializeStateFromData(response);
@@ -75,6 +76,7 @@ class Content extends Component {
       dataRevision,
       test_X,
       test_Y,
+      decisionData
     } = data;
 
     const labels = Object.keys(labeled);
@@ -104,6 +106,7 @@ class Content extends Component {
         empty: empty,
         test_X: test_X,
         test_Y: test_Y,
+        decisionData: decisionData,
       }
     });
   }
@@ -137,7 +140,7 @@ class Content extends Component {
   labelSelectedPoints = () => {
     if(this.state.num_selected === this.state.max_selected){
       if((this.state.num_selected + this.state.num_labeled) === this.state.max_labeled){
-        axios.post('https://www.active-demo.net/labelAndTest', {
+        axios.post('http://0.0.0.0:8001/labelAndTest', {
           labeled: this.state.labeledData,
           unlabeled: this.state.unlabeledData,
           selected: this.state.selectedData,
@@ -159,7 +162,7 @@ class Content extends Component {
         });
       }
       else {
-        axios.post('https://www.active-demo.net/label', {
+        axios.post('http://0.0.0.0:8001/label', {
           labeled: this.state.labeledData,
           unlabeled: this.state.unlabeledData,
           selected: this.state.selectedData,
@@ -181,7 +184,7 @@ class Content extends Component {
 
   activeSelect = () => {
     if(this.state.num_labeled !== this.state.max_labeled){
-      axios.post('https://www.active-demo.net/activeSelect', {
+      axios.post('http://0.0.0.0:8001/activeSelect', {
         labeled: this.state.labeledData,
         unlabeled: this.state.unlabeledData,
         selected: this.state.selectedData,
@@ -290,6 +293,10 @@ class Content extends Component {
     ));
   }
 
+  toggleInstructions = () => {
+    this.setState((prevState) => ({ isStartOpen: !prevState.isStartOpen }));
+  }
+
   closeStartModal = () => {
     this.setState({ isStartOpen: false});
   }
@@ -307,7 +314,7 @@ class Content extends Component {
         >
           {renderStartModal()}
         	<Button
-    				onClick={this.closeStartModal}
+    				onClick={this.toggleInstructions}
     				label={'Close'}
             className={'button--small'}
     			/>
@@ -332,8 +339,10 @@ class Content extends Component {
 					selectedData={this.state.selectedData}
 					handleDataClick={this.handleDataClick}
           dataRevision={this.state.dataRevision}
+          decisionData={this.state.decisionData}
 				/>
 				<Sidebar
+          toggle_instructions={this.toggleInstructions}
 					num_selected={this.state.num_selected}
 					max_selected={this.state.max_selected}
           num_labeled={this.state.num_labeled}
