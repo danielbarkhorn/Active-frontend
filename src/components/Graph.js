@@ -1,8 +1,10 @@
 import React from 'react';
 import Plot from 'react-plotly.js';
 
-export default (props) => {
+export default (props)=> {
   const {
+    width,
+    height,
     labels,
     xAxis,
     yAxis,
@@ -15,9 +17,9 @@ export default (props) => {
 
   const createLayout = () => {
     return {
-      width: 1000,
-      height: 600,
-      autosizer: 'true',
+      width: window.innerWidth - 400,
+      height: window.innerHeight - 150,
+
       hovermode: 'closest',
       showlegend: true,
       datarevision: dataRevision,
@@ -73,6 +75,7 @@ export default (props) => {
   const config = {
       showLink: false,
       displayModeBar: false,
+      responsive: true,
     }
 
   return (
