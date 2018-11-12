@@ -218,7 +218,7 @@ class Content extends Component {
       return;
     }
 
-    if(point.curveNumber !== 2) {
+    if(point.curveNumber !== 3) {
       this.props.alert.error('You have tried to select a labeled point.');
       return;
     }
