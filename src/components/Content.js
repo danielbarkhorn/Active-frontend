@@ -344,7 +344,7 @@ class Content extends Component {
           decisionCoef={this.state.decisionCoef}
 				/>
 				<Sidebar
-          toggleInstructions={this.toggleInstructions}
+          toggle_instructions={this.toggleInstructions}
 					num_selected={this.state.num_selected}
 					max_selected={this.state.max_selected}
           num_labeled={this.state.num_labeled}

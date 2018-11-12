@@ -69,13 +69,6 @@ export default (props)=> {
     }
     dataTrace.push(selectedTrace);
 
-    const a = -1 * decisionCoef[0][2] / decisionCoef[0][3];
-    const intercept = decisionInt[0] / decisionCoef[0][3];
-    const a1 = -1 * decisionCoef[1][2] / decisionCoef[1][3];
-    const intercept1 = decisionInt[1] / decisionCoef[1][3];
-    const a2 = -1 * decisionCoef[2][2] / decisionCoef[2][3];
-    const intercept2 = decisionInt[2] / decisionCoef[2][3];
-
     const y_a1 = -1 * ((decisionCoef[0][0] * 1) / decisionCoef[0][1] + (decisionInt[0] / decisionCoef[0][1]))
     const y_a2 = -1 * ((decisionCoef[0][0] * 5) / decisionCoef[0][1] + (decisionInt[0] / decisionCoef[0][1]))
 
