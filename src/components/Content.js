@@ -47,7 +47,7 @@ class Content extends Component {
   // https://www.active-demo.net
   restart = () =>
   {
-    axios.get('http://0.0.0.0:8001/restart')
+    axios.get('https://www.active-demo.net/restart')
     .then(response => response['data'])
     .then(response => {
       this.initializeStateFromData(response);
@@ -135,7 +135,7 @@ class Content extends Component {
   labelSelectedPoints = () => {
     if(this.state.num_selected === this.state.max_selected){
       if((this.state.num_selected + this.state.num_labeled) === this.state.max_labeled){
-        axios.post('http://0.0.0.0:8001/labelAndTest', {
+        axios.post('https://www.active-demo.net/labelAndTest', {
           labeled: this.state.labeledData,
           unlabeled: this.state.unlabeledData,
           selected: this.state.selectedData,
@@ -156,7 +156,7 @@ class Content extends Component {
         });
       }
       else {
-        axios.post('http://0.0.0.0:8001/label', {
+        axios.post('https://www.active-demo.net/label', {
           labeled: this.state.labeledData,
           unlabeled: this.state.unlabeledData,
           selected: this.state.selectedData,
@@ -178,7 +178,7 @@ class Content extends Component {
 
   activeSelect = () => {
     if(this.state.num_labeled !== this.state.max_labeled){
-      axios.post('http://0.0.0.0:8001/activeSelect', {
+      axios.post('https://www.active-demo.net/activeSelect', {
         labeled: this.state.labeledData,
         unlabeled: this.state.unlabeledData,
         selected: this.state.selectedData,
