@@ -3,6 +3,7 @@ import Button from './Button.js';
 
 export default (props) => {
 	const {
+		toggle_instructions,
 		num_selected,
 		labelPoints,
 		restart,
@@ -45,6 +46,11 @@ export default (props) => {
 				isDisabled={num_selected !== 20}
 				label='Restart Demo'
 				onClick={restart}
+			/>
+			<Button
+				className='button button-green'
+				label='Instructions'
+				onClick={toggle_instructions}
 			/>
 		</div>
 	)
