@@ -24,6 +24,8 @@ class Content extends Component {
       selectedData: [],
 			labeledData: {},
 
+      decisionInt: [],
+      decisionCoef: [[],[],[],[0,0,0]],
       num_labeled: 0,
       max_labeled: 20,
 			num_selected: 0,
@@ -63,6 +65,8 @@ class Content extends Component {
       dataRevision,
       test_X,
       test_Y,
+      decisionInt,
+      decisionCoef,
     } = data;
 
     const labels = Object.keys(labeled);
@@ -92,6 +96,8 @@ class Content extends Component {
         empty: empty,
         test_X: test_X,
         test_Y: test_Y,
+        decisionInt: decisionInt,
+        decisionCoef: decisionCoef,
       }
     });
   }
@@ -103,6 +109,8 @@ class Content extends Component {
       selected,
       dataRevision,
       numLabeled,
+      decisionInt,
+      decisionCoef,
     } = data;
 
     const newDataRevision = dataRevision + 1;
@@ -118,6 +126,8 @@ class Content extends Component {
         dataRevision: newDataRevision,
         num_selected: num_selected,
         num_labeled: newNumLabeled,
+        decisionInt: decisionInt,
+        decisionCoef: decisionCoef,
       }
     });
   }
@@ -135,7 +145,6 @@ class Content extends Component {
         })
         .then(response => response['data'])
         .then(response => {
-          console.log(response);
           this.setStateFromData(response);
           this.setState({
             isEndOpen: true,
@@ -278,6 +287,10 @@ class Content extends Component {
     ));
   }
 
+  toggleInstructions = () => {
+    this.setState((prevState) => ({ isStartOpen: !prevState.isStartOpen }));
+  }
+
   closeStartModal = () => {
     this.setState({ isStartOpen: false});
   }
@@ -327,8 +340,11 @@ class Content extends Component {
 					selectedData={this.state.selectedData}
 					handleDataClick={this.handleDataClick}
           dataRevision={this.state.dataRevision}
+          decisionInt={this.state.decisionInt}
+          decisionCoef={this.state.decisionCoef}
 				/>
 				<Sidebar
+          toggleInstructions={this.toggleInstructions}
 					num_selected={this.state.num_selected}
 					max_selected={this.state.max_selected}
           num_labeled={this.state.num_labeled}

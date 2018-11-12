@@ -3,8 +3,6 @@ import Plot from 'react-plotly.js';
 
 export default (props)=> {
   const {
-    width,
-    height,
     labels,
     xAxis,
     yAxis,
@@ -19,7 +17,7 @@ export default (props)=> {
 
   const createLayout = () => {
     return {
-      width: window.innerWidth - 400,
+      width: window.innerWidth - 300,
       height: window.innerHeight - 150,
 
       hovermode: 'closest',
