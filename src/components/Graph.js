@@ -90,7 +90,7 @@ export default (props)=> {
       y: [y_a1, y_a2],
       mode: 'lines',
       types: 'scatter',
-      name: 'Decision',
+      name: 'A vs B Boundary',
       marker: {
         color: 'pink',
         size: 12,
@@ -103,9 +103,9 @@ export default (props)=> {
       y: [y_b1, y_b2],
       mode: 'lines',
       types: 'scatter',
-      name: 'Decision',
+      name: 'A vs B Boundary',
       marker: {
-        color: 'blue',
+        color: 'cyan',
         size: 12,
       },
     }
@@ -116,9 +116,9 @@ export default (props)=> {
       y: [y_c1, y_c2],
       mode: 'lines',
       types: 'scatter',
-      name: 'Decision',
+      name: 'B vs C Boundary',
       marker: {
-        color: 'green',
+        color: 'yellow',
         size: 12,
       },
     }
