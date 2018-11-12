@@ -13,18 +13,6 @@ Modal.setAppElement(document.getElementById('root'));
 class Content extends Component {
   constructor(props) {
 		super(props);
-    const max_labeled_list = {
-      1: 20,
-      2: 20,
-      3: 21,
-      4: 20,
-      5: 20,
-      6: 18,
-      7: 21,
-      8: 16,
-      9: 18,
-      10:20,
-    };
 
 		this.state = {
       labels: [],
@@ -37,27 +25,27 @@ class Content extends Component {
 			labeledData: {},
 
       num_labeled: 0,
-      max_labeled_list,
-      max_labeled: max_labeled_list[3],
+      max_labeled: 20,
 			num_selected: 0,
-			max_selected: 3,
+			max_selected: 4,
       dataRevision: 0,
       empty: [],
       test_X: [],
       test_Y: [],
       results: '',
-      isStartOpen: true,
+      isStartOpen: false,
       isEndOpen: false,
 		}
 	}
 
   componentDidMount() {
     this.restart();
+     window.addEventListener("resize", this.updateGraphSize.bind(this));
   }
-
+  // https://www.active-demo.net
   restart = () =>
   {
-    axios.get('https://www.active-demo.net/restart')
+    axios.get('http://0.0.0.0:8001/restart')
     .then(response => response['data'])
     .then(response => {
       this.initializeStateFromData(response);
@@ -137,7 +125,7 @@ class Content extends Component {
   labelSelectedPoints = () => {
     if(this.state.num_selected === this.state.max_selected){
       if((this.state.num_selected + this.state.num_labeled) === this.state.max_labeled){
-        axios.post('https://www.active-demo.net/labelAndTest', {
+        axios.post('http://0.0.0.0:8001/labelAndTest', {
           labeled: this.state.labeledData,
           unlabeled: this.state.unlabeledData,
           selected: this.state.selectedData,
@@ -159,7 +147,7 @@ class Content extends Component {
         });
       }
       else {
-        axios.post('https://www.active-demo.net/label', {
+        axios.post('http://0.0.0.0:8001/label', {
           labeled: this.state.labeledData,
           unlabeled: this.state.unlabeledData,
           selected: this.state.selectedData,
@@ -181,7 +169,7 @@ class Content extends Component {
 
   activeSelect = () => {
     if(this.state.num_labeled !== this.state.max_labeled){
-      axios.post('https://www.active-demo.net/activeSelect', {
+      axios.post('http://0.0.0.0:8001/activeSelect', {
         labeled: this.state.labeledData,
         unlabeled: this.state.unlabeledData,
         selected: this.state.selectedData,
@@ -230,7 +218,7 @@ class Content extends Component {
       return;
     }
 
-    if(point.curveNumber !== 3 && point.curveNumber !== 4) {
+    if(point.curveNumber !== 3) {
       this.props.alert.error('You have tried to select a labeled point.');
       return;
     }
@@ -296,6 +284,13 @@ class Content extends Component {
 
   closeEndModal = () => {
     this.setState({ isEndOpen: false});
+  }
+
+  updateGraphSize = () => {
+    const newDataRevision = this.state.dataRevision + 1;
+    this.setState({
+      dataRevision: newDataRevision,
+    })
   }
 
 	render() {
