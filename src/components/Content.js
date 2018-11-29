@@ -42,7 +42,7 @@ class Content extends Component {
 
   componentDidMount() {
     this.restart();
-     window.addEventListener("resize", this.updateGraphSize.bind(this));
+     window.addEventListener("resize", this.debounce(this.updateGraphSize, 25).bind(this));
   }
   // https://www.active-demo.net
   restart = () =>
@@ -297,6 +297,15 @@ class Content extends Component {
 
   closeEndModal = () => {
     this.setState({ isEndOpen: false});
+  }
+
+  debounce = (func, wait) => {
+    let timeout;
+    return function(...args) {
+      const context = this;
+      clearTimeout(timeout);
+      timeout = setTimeout(() => func.apply(context, args), wait);
+    }
   }
 
   updateGraphSize = () => {
