@@ -1,5 +1,7 @@
 # Active Frontend
 
+## Demo is OFFLINE
+
 Active Learning frontend built with React and react-plotly.
 
 ### Set up development environment
